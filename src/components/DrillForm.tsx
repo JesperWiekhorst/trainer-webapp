@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { FilterSelector } from './FilterSelector';
 
 interface Drill {
   id: string;
   title: string;
   description: string;
+  filterOptions: string[]; // Array of selected filter option IDs
 }
 
 interface DrillFormProps {
@@ -15,11 +17,13 @@ interface DrillFormProps {
 const DrillForm = ({ selectedDrill, onSave, onClear }: DrillFormProps) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [selectedFilterOptions, setSelectedFilterOptions] = useState<string[]>([]);
 
   useEffect(() => {
     if (selectedDrill) {
       setTitle(selectedDrill.title);
       setDescription(selectedDrill.description);
+      setSelectedFilterOptions(selectedDrill.filterOptions || []);
     }
   }, [selectedDrill]);
 
@@ -33,18 +37,29 @@ const DrillForm = ({ selectedDrill, onSave, onClear }: DrillFormProps) => {
     onSave({
       title: title.trim(),
       description: description.trim(),
+      filterOptions: selectedFilterOptions,
     });
 
     // Clear form after save
     setTitle('');
     setDescription('');
+    setSelectedFilterOptions([]);
     onClear();
   };
 
   const handleClear = () => {
     setTitle('');
     setDescription('');
+    setSelectedFilterOptions([]);
     onClear();
+  };
+
+  const handleFilterToggle = (optionId: string) => {
+    setSelectedFilterOptions(prev =>
+      prev.includes(optionId)
+        ? prev.filter(id => id !== optionId) // Remove if already selected
+        : [...prev, optionId] // Add if not selected
+    );
   };
 
   return (
@@ -93,6 +108,12 @@ const DrillForm = ({ selectedDrill, onSave, onClear }: DrillFormProps) => {
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
           />
         </div>
+
+        {/* Filter Selection */}
+        <FilterSelector
+          selectedFilterOptions={selectedFilterOptions}
+          onFilterToggle={handleFilterToggle}
+        />
 
         <button
           type="submit"
