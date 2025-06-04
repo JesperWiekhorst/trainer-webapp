@@ -4,13 +4,40 @@ import { useState } from 'react';
 import { Drill } from '../components/DrillForm';
 import { DrillList } from '../components/DrillList';
 import { DrillModal } from '../components/DrillModal';
+import { FilterSelector } from '../components/FilterSelector';
 import { MOCK_DRILLS } from '../data/mockDrills';
+import { filterDrills } from '../utils/drillFiltering';
+import { FILTERS } from '../types/filters';
 
 const Home = () => {
   // Initialize with mock data for development - resets on every reload
   const [drills, setDrills] = useState<Drill[]>(MOCK_DRILLS);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null);
+  const [activeFilterOptions, setActiveFilterOptions] = useState<string[]>([]);
+
+  // Convert activeFilterOptions array to activeFilters object for filtering
+  const getActiveFilters = (): Record<string, string[]> => {
+    const activeFilters: Record<string, string[]> = {};
+    
+    activeFilterOptions.forEach(optionId => {
+      // Find which filter category this option belongs to using FILTERS constant
+      for (const filter of FILTERS) {
+        if (filter.options.find(opt => opt.id === optionId)) {
+          if (!activeFilters[filter.id]) {
+            activeFilters[filter.id] = [];
+          }
+          activeFilters[filter.id].push(optionId);
+          break;
+        }
+      }
+    });
+    
+    return activeFilters;
+  };
+
+  // Filter drills based on active filters
+  const filteredDrills = filterDrills(drills, getActiveFilters());
 
   const handleSaveDrill = (drillData: Omit<Drill, 'id'>) => {
     if (selectedDrill) {
@@ -47,6 +74,14 @@ const Home = () => {
     setSelectedDrill(null);
   };
 
+  const handleFilterToggle = (optionId: string) => {
+    setActiveFilterOptions(prev =>
+      prev.includes(optionId)
+        ? prev.filter(id => id !== optionId) // Remove if already selected
+        : [...prev, optionId] // Add if not selected
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -73,17 +108,30 @@ const Home = () => {
           </button>
         </div>
 
+        {/* Filter Bar using unified FilterSelector component */}
+        <FilterSelector
+          mode="dropdown"
+          selectedFilterOptions={activeFilterOptions}
+          onFilterToggle={handleFilterToggle}
+          title="Filter Drills"
+        />
+
         {/* Drill count and main content */}
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-gray-900">
-            Saved Drills {drills.length > 0 && <span className="text-gray-500 font-normal">({drills.length})</span>}
+            Saved Drills {filteredDrills.length > 0 && (
+              <span className="text-gray-500 font-normal">
+                ({filteredDrills.length}{drills.length !== filteredDrills.length && ` of ${drills.length}`})
+              </span>
+            )}
           </h2>
         </div>
 
         {/* Main content - Drill List */}
         <DrillList
-          drills={drills}
+          drills={filteredDrills}
           onEditDrill={handleEditDrill}
+          totalDrillCount={drills.length}
         />
 
         {/* Modal for creating/editing drills */}
