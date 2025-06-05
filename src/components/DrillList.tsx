@@ -62,15 +62,15 @@ export const DrillList = ({ drills, onEditDrill, totalDrillCount }: DrillListPro
             <div className="flex-1 min-w-0">
               {/* Drill title */}
               <h3 className="font-semibold text-gray-900 mb-2 text-lg">
-                {drill.title}
+                {drill.name}
               </h3>
               
               {/* Description preview */}
-              {drill.description && (
+              {drill.beschreibung && (
                 <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                  {drill.description.length > 150
-                    ? `${drill.description.substring(0, 150)}...`
-                    : drill.description}
+                  {drill.beschreibung.length > 150
+                    ? `${drill.beschreibung.substring(0, 150)}...`
+                    : drill.beschreibung}
                 </p>
               )}
               
@@ -100,7 +100,7 @@ export const DrillList = ({ drills, onEditDrill, totalDrillCount }: DrillListPro
             <button
               onClick={() => onEditDrill(drill)}
               className="ml-4 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors flex-shrink-0"
-              aria-label={`Edit ${drill.title}`}
+              aria-label={`Edit ${drill.name}`}
               title="Edit drill"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

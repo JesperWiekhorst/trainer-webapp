@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FILTERS, FilterOption, getFilterOptionColors, FILTER_COLORS, sortFilterOptions } from '../types/filters';
+import { FILTERS, FilterOption, getFilterOptionColors, sortFilterOptions } from '../types/filters';
 
 interface FilterSelectorProps {
   selectedFilterOptions: string[];

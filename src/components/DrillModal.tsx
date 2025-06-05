@@ -10,23 +10,33 @@ interface DrillModalProps {
 }
 
 export const DrillModal = ({ isOpen, onClose, selectedDrill, onSave }: DrillModalProps) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
   const [selectedFilterOptions, setSelectedFilterOptions] = useState<string[]>([]);
+  // German fields state
+  const [name, setName] = useState('');
+  const [beschreibung, setBeschreibung] = useState('');
+  const [aufbau, setAufbau] = useState('');
+  const [aufgabe, setAufgabe] = useState('');
+  const [korrekturen, setKorrekturen] = useState('');
 
   // Reset form when modal opens/closes or when selectedDrill changes
   useEffect(() => {
     if (isOpen) {
       if (selectedDrill) {
         // Pre-fill form with selected drill data for editing
-        setTitle(selectedDrill.title);
-        setDescription(selectedDrill.description);
         setSelectedFilterOptions(selectedDrill.filterOptions || []);
+        setName(selectedDrill.name || '');
+        setBeschreibung(selectedDrill.beschreibung || '');
+        setAufbau(selectedDrill.aufbau || '');
+        setAufgabe(selectedDrill.aufgabe || '');
+        setKorrekturen(selectedDrill.korrekturen || '');
       } else {
         // Clear form for new drill creation
-        setTitle('');
-        setDescription('');
         setSelectedFilterOptions([]);
+        setName('');
+        setBeschreibung('');
+        setAufbau('');
+        setAufgabe('');
+        setKorrekturen('');
       }
     }
   }, [isOpen, selectedDrill]);
@@ -34,14 +44,17 @@ export const DrillModal = ({ isOpen, onClose, selectedDrill, onSave }: DrillModa
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!title.trim()) {
+    if (!name.trim()) {
       return;
     }
 
     onSave({
-      title: title.trim(),
-      description: description.trim(),
       filterOptions: selectedFilterOptions,
+      name: name.trim(),
+      beschreibung: beschreibung.trim(),
+      aufbau: aufbau.trim(),
+      aufgabe: aufgabe.trim(),
+      korrekturen: korrekturen.trim(),
     });
 
     // Close modal after save
@@ -80,30 +93,72 @@ export const DrillModal = ({ isOpen, onClose, selectedDrill, onSave }: DrillModa
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-                Drill Title
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                Name
               </label>
               <input
                 type="text"
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Enter drill title..."
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Drill-Titel eingeben..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 required
               />
             </div>
 
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                Description
+              <label htmlFor="beschreibung" className="block text-sm font-medium text-gray-700 mb-1">
+                Beschreibung
               </label>
               <textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Describe the drill, setup, and instructions..."
-                rows={4}
+                id="beschreibung"
+                value={beschreibung}
+                onChange={(e) => setBeschreibung(e.target.value)}
+                placeholder="Allgemeine Beschreibung der Übung..."
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="aufbau" className="block text-sm font-medium text-gray-700 mb-1">
+                Aufbau
+              </label>
+              <textarea
+                id="aufbau"
+                value={aufbau}
+                onChange={(e) => setAufbau(e.target.value)}
+                placeholder="Beschreibung des Aufbaus (Ausrüstung, Platz, etc.)..."
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="aufgabe" className="block text-sm font-medium text-gray-700 mb-1">
+                Aufgabe
+              </label>
+              <textarea
+                id="aufgabe"
+                value={aufgabe}
+                onChange={(e) => setAufgabe(e.target.value)}
+                placeholder="Was sollen die Spieler bei dieser Übung tun..."
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="korrekturen" className="block text-sm font-medium text-gray-700 mb-1">
+                Korrekturen
+              </label>
+              <textarea
+                id="korrekturen"
+                value={korrekturen}
+                onChange={(e) => setKorrekturen(e.target.value)}
+                placeholder="Trainings-Tipps und häufige Korrekturen..."
+                rows={3}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
               />
             </div>

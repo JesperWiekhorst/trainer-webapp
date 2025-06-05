@@ -3,9 +3,13 @@ import { FilterSelector } from './FilterSelector';
 
 interface Drill {
   id: string;
-  title: string;
-  description: string;
   filterOptions: string[]; // Array of selected filter option IDs
+  // German fields
+  name: string; // Drill title
+  beschreibung: string; // General description
+  aufbau: string; // Setup description
+  aufgabe: string; // Player tasks
+  korrekturen: string; // Coaching tips and corrections
 }
 
 interface DrillFormProps {
@@ -15,42 +19,58 @@ interface DrillFormProps {
 }
 
 const DrillForm = ({ selectedDrill, onSave, onClear }: DrillFormProps) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
   const [selectedFilterOptions, setSelectedFilterOptions] = useState<string[]>([]);
+  // German fields state
+  const [name, setName] = useState('');
+  const [beschreibung, setBeschreibung] = useState('');
+  const [aufbau, setAufbau] = useState('');
+  const [aufgabe, setAufgabe] = useState('');
+  const [korrekturen, setKorrekturen] = useState('');
 
   useEffect(() => {
     if (selectedDrill) {
-      setTitle(selectedDrill.title);
-      setDescription(selectedDrill.description);
       setSelectedFilterOptions(selectedDrill.filterOptions || []);
+      setName(selectedDrill.name || '');
+      setBeschreibung(selectedDrill.beschreibung || '');
+      setAufbau(selectedDrill.aufbau || '');
+      setAufgabe(selectedDrill.aufgabe || '');
+      setKorrekturen(selectedDrill.korrekturen || '');
     }
   }, [selectedDrill]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!title.trim()) {
+    if (!name.trim()) {
       return;
     }
 
     onSave({
-      title: title.trim(),
-      description: description.trim(),
       filterOptions: selectedFilterOptions,
+      name: name.trim(),
+      beschreibung: beschreibung.trim(),
+      aufbau: aufbau.trim(),
+      aufgabe: aufgabe.trim(),
+      korrekturen: korrekturen.trim(),
     });
 
     // Clear form after save
-    setTitle('');
-    setDescription('');
     setSelectedFilterOptions([]);
+    setName('');
+    setBeschreibung('');
+    setAufbau('');
+    setAufgabe('');
+    setKorrekturen('');
     onClear();
   };
 
   const handleClear = () => {
-    setTitle('');
-    setDescription('');
     setSelectedFilterOptions([]);
+    setName('');
+    setBeschreibung('');
+    setAufbau('');
+    setAufgabe('');
+    setKorrekturen('');
     onClear();
   };
 
@@ -81,29 +101,29 @@ const DrillForm = ({ selectedDrill, onSave, onClear }: DrillFormProps) => {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-            Drill Title
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+            Name
           </label>
           <input
             type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter drill title..."
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Drill-Titel eingeben..."
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             required
           />
         </div>
 
         <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-            Description
+          <label htmlFor="beschreibung" className="block text-sm font-medium text-gray-700 mb-1">
+            Beschreibung
           </label>
           <textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Describe the drill, setup, and instructions..."
+            id="beschreibung"
+            value={beschreibung}
+            onChange={(e) => setBeschreibung(e.target.value)}
+            placeholder="Allgemeine Beschreibung der Übung..."
             rows={4}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
           />

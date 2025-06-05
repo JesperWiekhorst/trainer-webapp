@@ -16,7 +16,7 @@ export const filterDrills = (
   activeFilters: Record<string, string[]>
 ): Drill[] => {
   // If no filters are active, return all drills
-  const activeFilterEntries = Object.entries(activeFilters).filter(([_, options]) => options.length > 0);
+  const activeFilterEntries = Object.entries(activeFilters).filter(([, options]) => options.length > 0);
   
   if (activeFilterEntries.length === 0) {
     return drills;
@@ -24,7 +24,7 @@ export const filterDrills = (
 
   return drills.filter(drill => {
     // For each active filter category, check if drill matches at least one option (OR logic within category)
-    return activeFilterEntries.every(([filterId, selectedOptions]) => {
+    return activeFilterEntries.every(([, selectedOptions]) => {
       // Check if the drill has any of the selected options from this filter category
       return selectedOptions.some(optionId => drill.filterOptions.includes(optionId));
     });
